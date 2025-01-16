@@ -5,6 +5,9 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision.utils import save_image
 from tqdm import tqdm
 import numpy as np
+import Discriminator
+import Generator
+import HorseZebraDataset
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
@@ -65,7 +68,7 @@ def seed_everything(seed=42):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False     
 
-def train_fn(disc_H, disc_Z, gen_H, gen_Z, loader, opt_disc, opt_gen, l1, mse, d_scaler, g_scaler):
+def train_fn(disc_H, disc_Z, gen_H, gen_Z, loader, opt_disc, opt_gen, l1, mse):
     H_reals = 0
     H_fakes = 0
     loop = tqdm(loader, leave=True)   
@@ -119,4 +122,90 @@ def train_fn(disc_H, disc_Z, gen_H, gen_Z, loader, opt_disc, opt_gen, l1, mse, d
         save_image(fake_zebra * 0.5 + 0.5, f"generated_outputs/zebra_{idx}.png")
 
     loop.set_postfix(H_real=H_reals / (idx + 1), H_fake=H_fakes / (idx + 1))
+
+def main():
+    disc_H = Discriminator(in_channels=3).to(DEVICE)
+    disc_Z = Discriminator(in_channels=3).to(DEVICE)
+    gen_H = Generator(img_channels=3, num_residuals=3).to(DEVICE)
+    gen_Z = Generator(img_channels=3, num_residuals=3).to(DEVICE)   
+
+    # Use Adam optimizer for both Discriminator and Generator
+    opt_disc = optim.Adam(
+        disc_H.parameters() + disc_Z.parameters(),
+        lr=LEARNING_RATE,
+        betas=(0.5, 0.999)
+    )    
+
+    opt_gen = optim.Adam(
+        list(gen_Z.parameters()) + list(gen_H.parameters()),
+        lr=LEARNING_RATE,
+        betas=(0.5, 0.999),
+    )
+
+    L1 = nn.L1Loss()
+    mse = nn.MSELoss()
+
+    if LOAD_MODEL:
+        load_checkpoint(
+            CHECKPOINT_GENERATOR_H,
+            gen_H,
+            opt_gen,
+            LEARNING_RATE,
+        )
+        load_checkpoint(
+            CHECKPOINT_GENERATOR_Z,
+            gen_Z,
+            opt_gen,
+            LEARNING_RATE,
+        )
+        load_checkpoint(
+            CHECKPOINT_DISCRIMINATOR_H,
+            disc_H,
+            opt_disc,
+            LEARNING_RATE,
+        )
+        load_checkpoint(
+            CHECKPOINT_DISCRIMINATOR_Z,
+            disc_Z,
+            opt_disc,
+            LEARNING_RATE,
+        )
+
+    dataset = HorseZebraDataset(
+        root_horse=HORSE_TRAIN_DIR,
+        root_zebra=ZEBRA_TRAIN_DIR,
+        transform=transforms,
+    )
+    val_dataset = HorseZebraDataset(
+        root_horse=HORSE_VAL_DIR,
+        root_zebra=ZEBRA_VAL_DIR,
+        transform=transforms,
+    )
+    loader = DataLoader(
+        dataset,
+        batch_size=BATCH_SIZE,
+        shuffle=True,
+        num_workers=NUM_WORKERS,
+        pin_memory=True,
+    )
+    val_loader = DataLoader(
+        val_dataset,
+        batch_size=BATCH_SIZE,
+        shuffle=False,
+        pin_memory=True,
+    )
+
+    # Training phase
+    for epoch in range(NUM_EPOCHS):
+        train_fn(disc_H, disc_Z, gen_H, gen_Z, loader, opt_disc, opt_gen, L1, mse,)
+
+    if SAVE_MODEL:
+        save_checkpoint(gen_H, opt_gen, filename=CHECKPOINT_GENERATOR_H)
+        save_checkpoint(gen_Z, opt_gen, filename=CHECKPOINT_GENERATOR_Z)
+        save_checkpoint(disc_H, opt_disc, filename=CHECKPOINT_DISCRIMINATOR_H)
+        save_checkpoint(disc_Z, opt_disc, filename=CHECKPOINT_DISCRIMINATOR_Z)    
+
+if __name__ == "__main__":
+    main()
+
 
