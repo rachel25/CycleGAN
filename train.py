@@ -104,8 +104,8 @@ def train_fn(disc_H, disc_Z, gen_H, gen_Z, loader, opt_disc, opt_gen, l1, mse, d
     # cycle losses
     cycle_horse = gen_H(fake_zebra)
     cycle_zebra = gen_Z(fake_horse)
-    cycle_horse_loss = l1(horse, fake_horse)
-    cycle_zebra_loss = l1(zebra, fake_zebra)
+    cycle_horse_loss = l1(horse, cycle_horse)
+    cycle_zebra_loss = l1(zebra, cycle_zebra)
 
     # total loss
     G_loss = loss_G_H + loss_G_Z + cycle_horse_loss + cycle_zebra_loss
