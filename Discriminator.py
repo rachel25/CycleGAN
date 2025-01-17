@@ -1,10 +1,10 @@
 import torch
 import torch.nn as nn
-import ConvInstanceNormLeakyReLUBlock
+from ConvInstanceNormLeakyReLUBlock import ConvInstanceNormLeakyReLUBlock
 
 class Discriminator(nn.Module):
     def __init__(self, in_channels = 3, features = [64, 128, 256, 512]):
-        super().__init__()
+        super(Discriminator, self).__init__()
         self.initial_layer = nn.Sequential(
             nn.Conv2d(
                 in_channels,
@@ -23,7 +23,7 @@ class Discriminator(nn.Module):
                 ConvInstanceNormLeakyReLUBlock(
                     in_channels,
                     feature,
-                    stride = 1 if feature == feature[-1] else 2,
+                    stride = 1 if feature == features[-1] else 2,
                 )
             )
             in_channels = feature

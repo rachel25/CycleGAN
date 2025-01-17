@@ -1,13 +1,13 @@
 import torch
 import torch.nn as nn
-import ConvolutionalBlock
-import ResidualBlock
+from ConvolutionalBlock import ConvolutionalBlock
+from ResidualBlock import ResidualBlock
 
 class Generator(nn.Module):
     def __init__(self, img_channels: int, num_features: int = 64, num_residuals: int = 9):
-        super().__init__()
+        super(Generator, self).__init__()
         self.initial_layer = nn.Sequential(
-            nn.Conv2d(img_channels, num_features, kernel_size=7, stride=1, padding=1, padding_mode='reflect',),
+            nn.Conv2d(img_channels, num_features, kernel_size=7, stride=1, padding=3, padding_mode='reflect',),
             nn.InstanceNorm2d(num_features),
             nn.ReLU(inplace=True)
         )

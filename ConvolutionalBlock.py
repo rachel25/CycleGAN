@@ -3,7 +3,7 @@ import torch.nn as nn
 
 class ConvolutionalBlock(nn.Module):
     def __init__(self, in_channels: int, out_channels: int, is_downsampling: bool = True, add_activation: bool = True, **kwargs):
-        super.__init__()
+        super(ConvolutionalBlock, self).__init__()
         if is_downsampling:
             # Extract feature from sample 
             self.conv = nn.Sequential(
