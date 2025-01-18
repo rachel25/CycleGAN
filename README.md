@@ -26,13 +26,7 @@ This project implements a CycleGAN model for unpaired image-to-image translation
 
 ## Project Structure
 
-├── main.py # Script for image generation and display 
-├── train.py # Training script for CycleGAN 
-├── models/ # Directory to save/load model weights 
-├── Horse_Zebra_Images/ # Directory for dataset (trainA, trainB, testA, testB) 
-├── Generator.py # Generator model definition 
-├── Discriminator.py # Discriminator model definition 
-├── HorseZebraDataset.py # Dataset loader for horse and zebra images
+<pre markdown="1"> ``` ├── main.py # Script for image generation and display ├── train.py # Training script for CycleGAN ├── models/ # Directory to save/load model weights ├── Horse_Zebra_Images/ # Directory for dataset (trainA, trainB, testA, testB) ├── Generator.py # Generator model definition ├── Discriminator.py # Discriminator model definition ├── HorseZebraDataset.py # Dataset loader for horse and zebra images ``` </pre>
 
 ---
 
@@ -74,11 +68,7 @@ Follow the on-screen prompts to:
 
 ## Dataset
 
-Horse_Zebra_Images/
-├── trainA/  # Training images of horses
-├── trainB/  # Training images of zebras
-├── testA/   # Testing images of horses
-├── testB/   # Testing images of zebras
+<pre markdown="1"> ``` Horse_Zebra_Images/ ├── trainA/ # Training images of horses ├── trainB/ # Training images of zebras ├── testA/ # Testing images of horses ├── testB/ # Testing images of zebras ``` </pre>
 
 You can download the Horse to Zebra dataset from [Kaggle](https://www.kaggle.com/datasets/balraj98/horse2zebra-dataset?resource=download).
 
