@@ -146,7 +146,7 @@ def display_examples(val_loader, gen_H, gen_Z, L1):
 
     example_count = 0 
 
-    for idx, (horse, zebra) in enumerate(val_loader):
+    for idx, (zebra, horse) in enumerate(val_loader):
         if example_count >= 8:
             break
 

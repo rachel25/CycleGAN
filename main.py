@@ -2,7 +2,7 @@ import torch
 import torchvision.transforms as transforms
 from PIL import Image
 import matplotlib.pyplot as plt
-from model import Generator  # Ensure your Generator model is properly imported
+from Generator import Generator 
 
 # Load device
 device = "mps" if torch.backends.mps.is_available() else "cpu"
@@ -12,8 +12,8 @@ gen_H = Generator(img_channels=3, num_residuals=3).to(device)
 gen_Z = Generator(img_channels=3, num_residuals=3).to(device)
 
 # Load pre-trained weights
-CHECKPOINT_GENERATOR_H = "gen_H.pth"  # Replace with your actual checkpoint file path
-CHECKPOINT_GENERATOR_Z = "gen_Z.pth"  # Replace with your actual checkpoint file path
+CHECKPOINT_GENERATOR_H = "models/genh.pth.tar"  
+CHECKPOINT_GENERATOR_Z = "models/genz.pth.tar"
 
 def load_model(model, checkpoint_path):
     checkpoint = torch.load(checkpoint_path, map_location=device)
